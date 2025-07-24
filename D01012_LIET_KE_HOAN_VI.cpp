@@ -12,103 +12,48 @@ Output
 */
 
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int hoanVi[10][10];
-int soLuongHoanVi = 0;
+int n, m;
+int ketQua[10];
+bool daSuDung[11];
 
-void sinhHoanVi(int n, int m, int arr[], bool daSuDung[], int viTri) {
-	if (viTri == n) {
-		if (arr[n - 1] == m) {
-			for (int i = 0; i < n; i++) {
-				hoanVi[soLuongHoanVi][i] = arr[i];
-			}
-			soLuongHoanVi++;
-		}
-		return;
-	}
-	
-	for (int so = 1; so <= n; so++) {
-		if (!daSuDung[so]) {
-			arr[viTri] = so;
-			daSuDung[so] = true;
-			sinhHoanVi(n, m, arr, daSuDung, viTri + 1);
-			daSuDung[so] = false;
-		}
-	}
+void inKetQua() {
+    for (int i = 0; i < n - 1; ++i) {
+        cout << ketQua[i] << " ";
+    }
+    cout << m << endl;
 }
 
-void sinhHoanViConLai(int n, int arr[], bool daSuDung[], int viTri) {
-	if (viTri == n - 1) {
-		for (int i = 0; i < n; i++) {
-			hoanVi[soLuongHoanVi][i] = arr[i];
-		}
-		soLuongHoanVi++;
-		return;
-	}
-	
-	for (int so = 1; so <= n; so++) {
-		if (!daSuDung[so]) {
-			arr[viTri] = so;
-			daSuDung[so] = true;
-			sinhHoanViConLai(n, arr, daSuDung, viTri + 1);
-			daSuDung[so] = false;
-		}
-	}
+void quaylui(int viTri) {
+    if (viTri == n - 1) {
+        inKetQua();
+        return;
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        if (i != m && !daSuDung[i]) {
+            ketQua[viTri] = i;
+            daSuDung[i] = true;
+            
+            quaylui(viTri + 1);
+            
+            daSuDung[i] = false;
+        }
+    }
 }
 
-void sinhHoanViToiUu(int n, int m) {
-	int arr[10];
-	bool daSuDung[11] = {false};
-	
-	arr[n - 1] = m;
-	daSuDung[m] = true;
-	
-	sinhHoanViConLai(n, arr, daSuDung, 0);
-}
-
-void sapXepHoanVi(int n) {
-	for (int i = 0; i < soLuongHoanVi - 1; i++) {
-		for (int j = 0; j < soLuongHoanVi - 1 - i; j++) {
-			bool canDoiCho = false;
-			for (int k = 0; k < n; k++) {
-				if (hoanVi[j][k] < hoanVi[j + 1][k]) {
-					break;
-				} else if (hoanVi[j][k] > hoanVi[j + 1][k]) {
-					canDoiCho = true;
-					break;
-				}
-			}
-			if (canDoiCho) {
-				for (int k = 0; k < n; k++) {
-					int temp = hoanVi[j][k];
-					hoanVi[j][k] = hoanVi[j + 1][k];
-					hoanVi[j + 1][k] = temp;
-				}
-			}
-		}
-	}
-}
-
-void timHoanViTheoYeuCau(int n, int m) {
-	soLuongHoanVi = 0;
-	sinhHoanViToiUu(n, m);
-	sapXepHoanVi(n);
+void lietKeHoanVi() {
+    for (int i = 0; i <= n; ++i) {
+        daSuDung[i] = false;
+    }
+    quaylui(0);
 }
 
 int main() {
-	int N, M;
-	cin >> N >> M;
-	
-	timHoanViTheoYeuCau(N, M);
-	
-	for (int i = 0; i < soLuongHoanVi; i++) {
-		for (int j = 0; j < N; j++) {
-			cout << hoanVi[i][j];
-			if (j < N - 1) cout << " ";
-		}
-		cout << endl;
-	}
-	
-	return 0;
+    cin >> n >> m;
+    lietKeHoanVi();
+
+    return 0;
 }
